@@ -2,8 +2,9 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { SocketProvider } from './context/SocketContext'
 
-import LoginPage    from './pages/auth/LoginPage'
-import RegisterPage from './pages/auth/RegisterPage'
+import LandingPage   from './pages/LandingPage'
+import LoginPage     from './pages/auth/LoginPage'
+import RegisterPage  from './pages/auth/RegisterPage'
 
 import PatientDashboard  from './pages/patient/PatientDashboard'
 import HospitalsPage     from './pages/patient/HospitalsPage'
@@ -19,9 +20,9 @@ import AnalyticsDashboard    from './pages/receptionist/AnalyticsDashboard'
 import DoctorDashboard from './pages/doctor/DoctorDashboard'
 import DoctorQueue     from './pages/doctor/DoctorQueue'
 
-import Layout        from './components/common/Layout'
-import LoadingScreen from './components/common/LoadingScreen'
+import Layout from './components/common/Layout'
 
+// ── Guards ────────────────────────────────────────────────────────────────────
 const ProtectedRoute = ({ children, roles }) => {
   const { user, token } = useAuth()
   if (!token) return <Navigate to="/login" replace />
@@ -32,11 +33,14 @@ const ProtectedRoute = ({ children, roles }) => {
   return children
 }
 
-const RoleRedirect = () => {
+// If logged-in user hits /login or /register, send to their dashboard
+const PublicRoute = ({ children }) => {
   const { user, token } = useAuth()
-  if (!token) return <Navigate to="/login" replace />
-  const map = { patient: '/patient', receptionist: '/receptionist', doctor: '/doctor' }
-  return <Navigate to={map[user?.role] || '/login'} replace />
+  if (token) {
+    const map = { patient: '/patient', receptionist: '/receptionist', doctor: '/doctor' }
+    return <Navigate to={map[user?.role] || '/patient'} replace />
+  }
+  return children
 }
 
 export default function App() {
@@ -44,33 +48,35 @@ export default function App() {
     <AuthProvider>
       <SocketProvider>
         <Routes>
-          {/* Public */}
-          <Route path="/login"    element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/"         element={<RoleRedirect />} />
+          {/* ── Public ──────────────────────────────────────────────────── */}
+          <Route path="/" element={<LandingPage />} />
 
-          {/* Patient */}
-          <Route path="/patient" element={<ProtectedRoute roles={['patient']}><Layout /></ProtectedRoute>}>
-            <Route index                                     element={<PatientDashboard />} />
-            <Route path="hospitals"                          element={<HospitalsPage />} />
-            {/* book/:hospitalId — department chosen inside page */}
-            <Route path="book/:hospitalId"                   element={<BookAppointment />} />
-            <Route path="appointments"                       element={<MyAppointments />} />
-            {/* queue tracker: by hospital + department */}
-            <Route path="queue/:hospitalId/:department"      element={<QueueTracker />} />
+          <Route path="/login"    element={<PublicRoute><LoginPage /></PublicRoute>} />
+          <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
+
+          {/* ── Patient ─────────────────────────────────────────────────── */}
+          <Route path="/patient"
+            element={<ProtectedRoute roles={['patient']}><Layout /></ProtectedRoute>}>
+            <Route index                               element={<PatientDashboard />} />
+            <Route path="hospitals"                    element={<HospitalsPage />} />
+            <Route path="book/:hospitalId"             element={<BookAppointment />} />
+            <Route path="appointments"                 element={<MyAppointments />} />
+            <Route path="queue/:hospitalId/:department" element={<QueueTracker />} />
           </Route>
 
-          {/* Receptionist */}
-          <Route path="/receptionist" element={<ProtectedRoute roles={['receptionist']}><Layout /></ProtectedRoute>}>
-            <Route index         element={<ReceptionistDashboard />} />
+          {/* ── Receptionist ────────────────────────────────────────────── */}
+          <Route path="/receptionist"
+            element={<ProtectedRoute roles={['receptionist']}><Layout /></ProtectedRoute>}>
+            <Route index            element={<ReceptionistDashboard />} />
             <Route path="walkin"    element={<WalkInForm />} />
             <Route path="queue"     element={<HospitalQueue />} />
             <Route path="analytics" element={<AnalyticsDashboard />} />
           </Route>
 
-          {/* Doctor */}
-          <Route path="/doctor" element={<ProtectedRoute roles={['doctor']}><Layout /></ProtectedRoute>}>
-            <Route index     element={<DoctorDashboard />} />
+          {/* ── Doctor ──────────────────────────────────────────────────── */}
+          <Route path="/doctor"
+            element={<ProtectedRoute roles={['doctor']}><Layout /></ProtectedRoute>}>
+            <Route index        element={<DoctorDashboard />} />
             <Route path="queue" element={<DoctorQueue />} />
           </Route>
 
