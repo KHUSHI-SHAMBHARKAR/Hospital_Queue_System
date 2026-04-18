@@ -11,12 +11,15 @@ const submitFeedback = async (req, res, next) => {
 
     const appointment = await Appointment.findById(appointmentId);
     if (!appointment) return res.status(404).json({ success: false, message: 'Appointment not found' });
-    if (appointment.patient.toString() !== req.user._id.toString()) {
+
+    if (!appointment.patient || appointment.patient.toString() !== req.user._id.toString()) {
       return res.status(403).json({ success: false, message: 'Not your appointment' });
     }
-    if (appointment.status !== 'done') {
+
+    if (!(appointment.status === 'completed' || appointment.completedAt)) {
       return res.status(400).json({ success: false, message: 'Can only rate completed appointments' });
     }
+
     if (appointment.feedback) {
       return res.status(409).json({ success: false, message: 'Feedback already submitted' });
     }

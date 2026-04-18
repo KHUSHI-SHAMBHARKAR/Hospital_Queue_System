@@ -55,7 +55,7 @@ const DOCTOR_TEMPLATES = {
     { firstName: 'Dr. Sunita', lastName: 'Agrawal',  avgTime: 12 },
   ],
   Orthopedics: [
-    { firstName: 'Dr. Anil',   lastName: 'Thakur',   avgTime: 20 },
+    { firstName: 'Dr. Anil',   lastName: 'Thakur',   avgTime: 15 },
     { firstName: 'Dr. Pooja',  lastName: 'Sharma',   avgTime: 18 },
   ],
   Neurology: [
@@ -140,6 +140,42 @@ const seed = async () => {
     phone: '9111111111',
     location: { lat: 21.1466, lng: 79.0920, city: 'Nagpur' },
   });
+  await User.create({
+    name: 'Reception Demo',
+    email: 'receptionist@citygeneral.com',
+    password: 'Recept@123',
+    role: 'receptionist',
+    hospital: hospitals[0]._id,
+    phone: '9000000000',
+  });
+  await User.create([
+    {
+      name: 'Dr. Priya',
+      email: 'dr.priya@citygeneral.com',
+      password: 'Doctor@123',
+      role: 'doctor',
+      specialization: Object.keys(DOCTOR_TEMPLATES)[0],
+      department: Object.keys(DOCTOR_TEMPLATES)[0],
+      hospital: hospitals[0]._id,
+      isAvailable: true,
+      avgConsultationTime: 15,
+      phone: '9822500001',
+    },
+    {
+      name: 'Dr. Rahul',
+      email: 'dr.rahul@citygeneral.com',
+      password: 'Doctor@123',
+      role: 'doctor',
+      specialization: Object.keys(DOCTOR_TEMPLATES)[1],
+      department: Object.keys(DOCTOR_TEMPLATES)[1],
+      hospital: hospitals[0]._id,
+      isAvailable: true,
+      avgConsultationTime: 15,
+      phone: '9822500002',
+    },
+  ]);
+  
+  
 
   console.log('\n📋 Demo Credentials:');
   console.log('  Patient:       patient@demo.com          / Patient@123');
