@@ -60,6 +60,21 @@ hospital-queue/
 
 ---
 
+## 📸 Screenshots
+
+### 🏠 Landing Page
+![Landing Page](./screenshots/LandingPage.png)
+
+### 📊 Patient Dashboard
+![Dashboard](./screenshots/Patient%20Dashboard.png)
+
+### 🚑 Live Queue System
+![Queue](./screenshots/Attendant%20Dashboard.png)
+
+### 📈 Analytics Dashboard
+![Analytics](./screenshots/Analytics.png)
+
+
 ## ⚙️ Setup & Installation
 
 ### Prerequisites
@@ -243,3 +258,7 @@ CLIENT_URL=https://your-frontend.vercel.app
 - `recalculateWaitTimes` runs on every status change — consider debouncing for large queues
 - Analytics aggregations should be cached (Redis, 1-min TTL) for high-traffic hospitals
 - Socket.IO in-memory rooms won't survive pod restarts — use Redis adapter in production
+
+
+👩‍💻Author:
+Khushi Shambharkar
