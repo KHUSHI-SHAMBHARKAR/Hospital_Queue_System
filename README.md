@@ -69,10 +69,10 @@ hospital-queue/
 ![Dashboard](./screenshots/Patient%20Dashboard.png)
 
 ### 🚑 Live Queue System
-![Queue](./screenshots/Attendant%20Dashboard.png)
+![Queue](./screenshots/Analytics.png)
 
 ### 📈 Analytics Dashboard
-![Analytics](./screenshots/Analytics.png)
+![Analytics](./screenshots/Attendant%20Dashboard.png)
 
 
 ## ⚙️ Setup & Installation
